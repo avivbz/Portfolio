@@ -1,0 +1,1078 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="אביב בן-צבי — פיתוח תוכן והדרכת מורים בשילוב פדגוגי, מושכל ואתי של בינה מלאכותית בהוראה.">
+  <meta name="author" content="אביב בן-צבי">
+  <title>אביב בן-צבי · בינה ופדגוגיה</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Assistant:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+
+  <link rel="icon" type="image/png" href="assets/aviv-logo.png">
+
+  <style>
+    /* ============================================================
+       Design tokens
+       ============================================================ */
+    :root {
+      --color-bg: #faf7f2;          /* warm cream */
+      --color-bg-alt: #f3ede4;      /* slightly deeper cream for sections */
+      --color-surface: #ffffff;     /* card surface */
+      --color-text: #2b2620;        /* warm near-black */
+      --color-text-soft: #5a5147;   /* warm grey */
+      --color-text-muted: #8a8175;  /* warm muted */
+      --color-accent: #c0613a;      /* terracotta — from sunset */
+      --color-accent-deep: #9d4a26; /* deeper terracotta for hover */
+      --color-accent-soft: #e8d4c5; /* very pale terracotta wash */
+      --color-line: #e6dfd3;        /* hairline */
+      --color-text-nav: #c0613a; 
+
+      --font-display: 'Assistant', system-ui, sans-serif;
+      --font-body: 'Assistant', system-ui, sans-serif;
+
+      --maxw: 1180px;
+      --gutter: clamp(1.25rem, 4vw, 2.5rem);
+
+      --shadow-rest: 0 1px 2px rgba(43, 38, 32, 0.04);
+      --shadow-hover: 0 12px 28px -12px rgba(43, 38, 32, 0.18), 0 4px 8px -4px rgba(43, 38, 32, 0.08);
+
+      --radius-sm: 4px;
+      --radius-md: 8px;
+      --radius-lg: 14px;
+
+      --ease: cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    /* ============================================================
+       Reset & base
+       ============================================================ */
+    *, *::before, *::after { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body {
+      margin: 0;
+      font-family: var(--font-body);
+      font-weight: 400;
+      font-size: 17px;
+      line-height: 1.7;
+      color: var(--color-text);
+      background: var(--color-bg);
+      -webkit-font-smoothing: antialiased;
+      text-rendering: optimizeLegibility;
+    }
+
+    h1, h2, h3, h4 {
+      font-family: var(--font-display);
+      font-weight: 700;
+      line-height: 1.2;
+      color: var(--color-text);
+      margin: 0;
+      letter-spacing: -0.01em;
+    }
+
+    p { margin: 0 0 1.1em 0; }
+    p:last-child { margin-bottom: 0; }
+
+    a { color: var(--color-accent); text-decoration: none; transition: color 0.2s var(--ease); }
+    a:hover { color: var(--color-accent-deep); }
+
+    img { display: block; max-width: 100%; height: auto; }
+
+    button {
+      font-family: inherit;
+      font-size: inherit;
+      color: inherit;
+      background: none;
+      border: none;
+      padding: 0;
+      cursor: pointer;
+    }
+
+    .container {
+      width: 100%;
+      max-width: var(--maxw);
+      margin: 0 auto;
+      padding-inline: var(--gutter);
+    }
+
+    .visually-hidden {
+      position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px;
+      overflow: hidden; clip: rect(0,0,0,0); white-space: nowrap; border: 0;
+    }
+
+    /* ============================================================
+       Navigation
+       ============================================================ */
+    .nav {
+      position: sticky;
+      top: 0;
+      z-index: 50;
+      background: rgba(250, 247, 242, 0.88);
+      backdrop-filter: saturate(180%) blur(12px);
+      -webkit-backdrop-filter: saturate(180%) blur(12px);
+      border-bottom: 1px solid transparent;
+      transition: border-color 0.3s var(--ease);
+    }
+    .nav.is-scrolled { border-bottom-color: var(--color-line); }
+
+    .nav__inner {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1.5rem;
+      padding-block: 1rem;
+    }
+
+    .nav__brand {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      font-family: var(--font-display);
+      font-weight: 700;
+      font-size: 1.05rem;
+      color: var(--color-text-nav);
+    }
+    .nav__brand-logo {
+      height: 36px;
+      width: auto;
+      display: block;
+    }
+    @media (max-width: 480px) {
+      .nav__brand-logo { height: 30px; }
+    }
+
+    .nav__links {
+      display: flex;
+      align-items: center;
+      gap: clamp(1rem, 2.5vw, 2rem);
+      list-style: none;
+      margin: 0;
+      padding: 0;
+    }
+    .nav__links a {
+      color: var(--color-text-soft);
+      font-size: 0.95rem;
+      font-weight: 500;
+      position: relative;
+      padding-block: 0.25rem;
+    }
+    .nav__links a::after {
+      content: '';
+      position: absolute;
+      right: 0; bottom: 0;
+      width: 0; height: 1.5px;
+      background: var(--color-accent);
+      transition: width 0.3s var(--ease);
+    }
+    .nav__links a:hover { color: var(--color-text); }
+    .nav__links a:hover::after { width: 100%; }
+
+    .nav__toggle {
+      display: none;
+      width: 40px; height: 40px;
+      align-items: center; justify-content: center;
+      border-radius: var(--radius-sm);
+      color: var(--color-text);
+    }
+    .nav__toggle:hover { background: var(--color-bg-alt); }
+    .nav__toggle svg { width: 22px; height: 22px; }
+
+    @media (max-width: 720px) {
+      .nav__links {
+        display: none;
+        position: absolute;
+        top: 100%; right: 0; left: 0;
+        flex-direction: column;
+        align-items: stretch;
+        gap: 0;
+        background: var(--color-bg);
+        border-bottom: 1px solid var(--color-line);
+        padding: 0.5rem var(--gutter) 1rem;
+      }
+      .nav__links.is-open { display: flex; }
+      .nav__links li { border-top: 1px solid var(--color-line); }
+      .nav__links a { display: block; padding-block: 0.9rem; font-size: 1rem; }
+      .nav__links a::after { display: none; }
+      .nav__toggle { display: inline-flex; }
+    }
+
+    /* ============================================================
+       Hero
+       ============================================================ */
+    .hero {
+      position: relative;
+      padding-top: clamp(2.5rem, 6vw, 4rem);
+      padding-bottom: clamp(2rem, 4.5vw, 3rem);
+      overflow: hidden;
+    }
+
+    /* Decorative warm wash behind hero */
+    .hero::before {
+      content: '';
+      position: absolute;
+      top: -10%;
+      left: -10%;
+      width: 60%;
+      height: 80%;
+      background: radial-gradient(ellipse at center, var(--color-accent-soft) 0%, transparent 65%);
+      opacity: 0.55;
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    .hero__inner {
+      position: relative;
+      z-index: 1;
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: clamp(2rem, 5vw, 4rem);
+      align-items: center;
+    }
+
+    .hero__text {
+      max-width: 42ch;
+    }
+
+    .hero__eyebrow {
+      display: inline-block;
+      font-family: var(--font-body);
+      font-size: 0.78rem;
+      font-weight: 600;
+      letter-spacing: 0.14em;
+      color: var(--color-accent);
+      text-transform: uppercase;
+      margin-bottom: 1.1rem;
+      padding-bottom: 0.35rem;
+      border-bottom: 1.5px solid var(--color-accent);
+    }
+
+    .hero__title {
+      font-size: clamp(2rem, 4.5vw, 3.2rem);
+      font-weight: 800;
+      line-height: 1.1;
+      margin-bottom: 0.85rem;
+      letter-spacing: -0.02em;
+      white-space: nowrap;
+    }
+
+    .hero__subtitle {
+      font-family: var(--font-body);
+      font-weight: 400;
+      font-size: clamp(1rem, 1.6vw, 1.2rem);
+      color: var(--color-text-soft);
+      line-height: 1.5;
+      margin-bottom: 1.75rem;
+    }
+
+    .hero__contact {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.6rem;
+      font-size: 0.98rem;
+      color: var(--color-text);
+      padding: 0.7rem 1.1rem;
+      background: var(--color-surface);
+      border: 1px solid var(--color-line);
+      border-radius: var(--radius-md);
+      transition: all 0.2s var(--ease);
+    }
+    .hero__contact:hover {
+      border-color: var(--color-accent);
+      transform: translateY(-1px);
+      box-shadow: var(--shadow-hover);
+      color: var(--color-text);
+    }
+    .hero__contact svg { width: 18px; height: 18px; color: var(--color-accent); }
+
+    .hero__portrait-wrap {
+      position: relative;
+    }
+    .hero__portrait {
+      width: clamp(220px, 28vw, 340px);
+      height: clamp(220px, 28vw, 340px);
+      border-radius: 18px;
+      object-fit: cover;
+      box-shadow: 0 24px 50px -20px rgba(43, 38, 32, 0.25), 0 8px 16px -8px rgba(43, 38, 32, 0.12);
+      position: relative;
+      z-index: 1;
+    }
+    /* offset frame behind portrait */
+    .hero__portrait-wrap::after {
+      content: '';
+      position: absolute;
+      inset: 18px -18px -18px 18px;
+      border: 1.5px solid var(--color-accent);
+      border-radius: 18px;
+      z-index: 0;
+    }
+
+    @media (max-width: 820px) {
+      .hero__inner {
+        grid-template-columns: 1fr;
+        text-align: center;
+      }
+      .hero__text { max-width: none; margin: 0 auto; }
+      .hero__portrait-wrap { justify-self: center; order: -1; }
+      .hero__portrait-wrap::after { inset: 12px -12px -12px 12px; }
+      .hero__eyebrow { margin-inline: auto; }
+    }
+    @media (max-width: 400px) {
+      .hero__title { white-space: normal; font-size: 1.85rem; }
+    }
+
+    /* ============================================================
+       Section base
+       ============================================================ */
+    .section {
+      padding-block: clamp(2.5rem, 4.5vw, 3rem);
+      position: relative;
+    }
+    .section--alt { background: var(--color-bg-alt); }
+
+    .section__header { margin-bottom: clamp(2rem, 4vw, 3rem); }
+
+    .section__label {
+      display: block;
+      font-family: var(--font-body);
+      font-size: 0.78rem;
+      font-weight: 500;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: var(--color-accent);
+      margin-bottom: 0.75rem;
+    }
+
+    .section__title {
+      font-size: clamp(2rem, 4vw, 2.75rem);
+      font-weight: 800;
+      margin-bottom: 0.5rem;
+      letter-spacing: -0.02em;
+    }
+
+    .section__intro {
+      font-family: var(--font-body);
+      font-weight: 400;
+      font-size: clamp(1rem, 1.5vw, 1.13rem);
+      line-height: 1.65;
+      color: var(--color-text-soft);
+      max-width: 60ch;
+      margin-top: 1rem;
+    }
+
+    /* ============================================================
+       Expandable cards (about + philosophy)
+       ============================================================ */
+    .expand-card {
+      position: relative;
+      background: var(--color-surface);
+      border-radius: var(--radius-lg);
+      box-shadow: var(--shadow-rest);
+      overflow: hidden;
+      transition: box-shadow 0.3s var(--ease), transform 0.3s var(--ease);
+    }
+    .expand-card::before {
+      content: '';
+      position: absolute;
+      top: 0; right: 0; bottom: 0;
+      width: 5px;
+      background: var(--color-accent);
+    }
+    .expand-card:hover { box-shadow: var(--shadow-hover); transform: translateY(-2px); }
+
+    .expand-card__head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1.5rem;
+      width: 100%;
+      padding: clamp(1.5rem, 3vw, 2rem) clamp(1.5rem, 3vw, 2.25rem);
+      text-align: right;
+    }
+    .expand-card__head:hover .expand-card__title { color: var(--color-accent-deep); }
+
+    .expand-card__title {
+      font-family: var(--font-display);
+      font-weight: 700;
+      font-size: clamp(1.3rem, 2.4vw, 1.55rem);
+      transition: color 0.2s var(--ease);
+      letter-spacing: -0.01em;
+    }
+
+    .expand-card__hint {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      font-size: 0.88rem;
+      color: var(--color-text-muted);
+      font-weight: 500;
+      white-space: nowrap;
+    }
+    .expand-card__chevron {
+      width: 22px; height: 22px;
+      color: var(--color-accent);
+      transition: transform 0.35s var(--ease);
+    }
+    .expand-card[open] .expand-card__chevron { transform: rotate(180deg); }
+    .expand-card[open] .expand-card__hint-text--closed { display: none; }
+    .expand-card__hint-text--open { display: none; }
+    .expand-card[open] .expand-card__hint-text--open { display: inline; }
+
+    .expand-card__body {
+      max-height: 0;
+      overflow: hidden;
+      transition: max-height 0.5s var(--ease);
+    }
+    .expand-card__body-inner {
+      padding: 0 clamp(1.5rem, 3vw, 2.25rem) clamp(1.75rem, 3vw, 2.25rem);
+      border-top: 1px solid var(--color-line);
+      padding-top: 1.5rem;
+      max-width: 72ch;
+      color: var(--color-text-soft);
+      font-size: 1.02rem;
+    }
+    .expand-card__body-inner p { color: var(--color-text-soft); }
+    .expand-card__body-inner strong { color: var(--color-text); font-weight: 700; }
+
+    /* ============================================================
+       Portfolio
+       ============================================================ */
+    .portfolio-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: clamp(1.25rem, 2.5vw, 1.75rem);
+      margin-top: 2rem;
+    }
+    @media (max-width: 720px) {
+      .portfolio-grid { grid-template-columns: 1fr; }
+    }
+
+    .category-card {
+      position: relative;
+      background: var(--color-surface);
+      border-radius: var(--radius-lg);
+      box-shadow: var(--shadow-rest);
+      overflow: hidden;
+      transition: box-shadow 0.3s var(--ease), transform 0.3s var(--ease);
+      display: flex;
+      flex-direction: column;
+    }
+    .category-card::before {
+      content: '';
+      position: absolute;
+      top: 0; right: 0; bottom: 0;
+      width: 5px;
+      background: var(--color-accent);
+    }
+    .category-card:hover { box-shadow: var(--shadow-hover); transform: translateY(-3px); }
+
+    .category-card__head {
+      display: block;
+      width: 100%;
+      text-align: right;
+      padding: clamp(1.5rem, 2.5vw, 1.85rem) clamp(1.5rem, 2.5vw, 1.85rem) clamp(1.25rem, 2vw, 1.5rem);
+      cursor: pointer;
+    }
+
+    .category-card__index {
+      font-family: var(--font-display);
+      font-weight: 400;
+      font-size: 0.85rem;
+      color: var(--color-accent);
+      letter-spacing: 0.08em;
+      margin-bottom: 0.6rem;
+      display: block;
+    }
+
+    .category-card__title {
+      font-family: var(--font-display);
+      font-weight: 700;
+      font-size: clamp(1.2rem, 2.1vw, 1.4rem);
+      line-height: 1.3;
+      margin-bottom: 0.6rem;
+      transition: color 0.2s var(--ease);
+      letter-spacing: -0.01em;
+    }
+    .category-card:hover .category-card__title { color: var(--color-accent-deep); }
+
+    .category-card__desc {
+      font-size: 0.97rem;
+      line-height: 1.6;
+      color: var(--color-text-soft);
+      margin: 0;
+    }
+
+    .category-card__footer {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 0.75rem;
+      padding: 1rem clamp(1.5rem, 2.5vw, 1.85rem) 1.25rem;
+      border-top: 1px solid var(--color-line);
+      font-size: 0.88rem;
+      color: var(--color-text-muted);
+      font-weight: 500;
+    }
+    .category-card__count {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+    }
+    .category-card__count-num {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-width: 22px;
+      height: 22px;
+      padding: 0 6px;
+      border-radius: 999px;
+      background: var(--color-accent-soft);
+      color: var(--color-accent-deep);
+      font-size: 0.78rem;
+      font-weight: 700;
+    }
+    .category-card__toggle {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+      color: var(--color-accent);
+      font-weight: 600;
+    }
+    .category-card__toggle svg {
+      width: 16px; height: 16px;
+      transition: transform 0.35s var(--ease);
+    }
+    .category-card[data-open="true"] .category-card__toggle svg { transform: rotate(180deg); }
+    .category-card__toggle-text--open { display: none; }
+    .category-card[data-open="true"] .category-card__toggle-text--closed { display: none; }
+    .category-card[data-open="true"] .category-card__toggle-text--open { display: inline; }
+
+    .projects {
+      max-height: 0;
+      overflow: hidden;
+      transition: max-height 0.5s var(--ease);
+    }
+    .projects__inner {
+      padding: 0.25rem clamp(1.5rem, 2.5vw, 1.85rem) clamp(1.5rem, 2.5vw, 1.85rem);
+      display: flex;
+      flex-direction: column;
+      gap: 0.6rem;
+    }
+
+    .project {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1rem;
+      padding: 0.9rem 1.1rem;
+      background: var(--color-bg-alt);
+      border-radius: var(--radius-md);
+      transition: background 0.2s var(--ease), transform 0.2s var(--ease);
+      color: var(--color-text);
+    }
+    .project:hover {
+      background: var(--color-accent-soft);
+      transform: translateX(-3px); /* moves slightly leftward on RTL hover */
+      color: var(--color-text);
+    }
+    .project__title {
+      font-weight: 500;
+      font-size: 0.97rem;
+      line-height: 1.4;
+    }
+    .project__meta {
+      display: flex;
+      align-items: center;
+      gap: 0.6rem;
+      flex-shrink: 0;
+    }
+    .project__tag {
+      font-size: 0.75rem;
+      font-weight: 600;
+      letter-spacing: 0.04em;
+      color: var(--color-accent-deep);
+      background: var(--color-surface);
+      padding: 0.25rem 0.6rem;
+      border-radius: 999px;
+      border: 1px solid var(--color-line);
+    }
+    .project__arrow {
+      width: 14px; height: 14px;
+      color: var(--color-text-muted);
+      transition: transform 0.2s var(--ease), color 0.2s var(--ease);
+      /* arrow points left (external) in RTL */
+      transform: rotate(180deg);
+    }
+    .project:hover .project__arrow {
+      color: var(--color-accent-deep);
+      transform: rotate(180deg) translateX(3px);
+    }
+
+    @media (max-width: 480px) {
+      .project { flex-direction: column; align-items: flex-start; gap: 0.5rem; }
+      .project__meta { width: 100%; justify-content: space-between; }
+    }
+
+    /* ============================================================
+       Contact
+       ============================================================ */
+    .contact {
+      text-align: center;
+      padding-block: clamp(4rem, 6vw, 5rem);
+    }
+    .contact__title {
+      font-size: clamp(2rem, 4vw, 2.75rem);
+      margin-bottom: 2.5rem;
+    }
+    .contact__lead {
+      font-family: var(--font-body);
+      color: var(--color-text-soft);
+      font-size: clamp(1.05rem, 1.8vw, 1.25rem);
+      max-width: 50ch;
+      margin: 0 auto 2rem;
+    }
+    .contact__mail {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.6rem;
+      font-family: var(--font-body);
+      font-weight: 500;
+      font-size: clamp(1.15rem, 2.3vw, 1.45rem);
+      color: var(--color-text);
+      padding: 0.85rem 1.5rem;
+      background: var(--color-surface);
+      border: 1.5px solid var(--color-line);
+      border-radius: var(--radius-md);
+      transition: all 0.25s var(--ease);
+    }
+    .contact__mail:hover {
+      border-color: var(--color-accent);
+      background: var(--color-accent);
+      color: white;
+      transform: translateY(-2px);
+      box-shadow: var(--shadow-hover);
+    }
+    .contact__mail svg { width: 22px; height: 22px; }
+
+    /* ============================================================
+       Footer
+       ============================================================ */
+    .footer {
+      padding: 2rem var(--gutter);
+      border-top: 1px solid var(--color-line);
+      text-align: center;
+      font-size: 0.85rem;
+      color: var(--color-text-muted);
+    }
+    .footer a { color: var(--color-text-muted); }
+    .footer a:hover { color: var(--color-accent); }
+
+    /* ============================================================
+       Reveal-on-scroll
+       ============================================================ */
+    .reveal {
+      opacity: 0;
+      transform: translateY(20px);
+      transition: opacity 0.7s var(--ease), transform 0.7s var(--ease);
+    }
+    .reveal.is-visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after {
+        animation-duration: 0.01ms !important;
+        transition-duration: 0.01ms !important;
+      }
+      .reveal { opacity: 1; transform: none; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ====================== Navigation ====================== -->
+  <nav class="nav" id="nav">
+    <div class="container nav__inner">
+      <a href="#top" class="nav__brand" aria-label="אביב בן-צבי — לראש העמוד">
+        <img src="assets/aviv-logo.png" alt="אביב בן-צבי — בינה ופדגוגיה" class="nav__brand-logo">
+      </a>
+
+      <button class="nav__toggle" id="navToggle" aria-label="פתיחת תפריט" aria-expanded="false" aria-controls="navLinks">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+          <line x1="3" y1="6" x2="21" y2="6"/>
+          <line x1="3" y1="12" x2="21" y2="12"/>
+          <line x1="3" y1="18" x2="21" y2="18"/>
+        </svg>
+      </button>
+
+      <ul class="nav__links" id="navLinks">
+        <li><a href="#about">קצת עליי</a></li>
+        <li><a href="#philosophy">תפיסה פדגוגית</a></li>
+        <li><a href="#portfolio">תיק עבודות</a></li>
+        <li><a href="#contact">יצירת קשר</a></li>
+      </ul>
+    </div>
+  </nav>
+
+  <!-- ====================== Hero ====================== -->
+  <header class="hero" id="top">
+    <div class="container hero__inner">
+      <div class="hero__text reveal">
+        <h1 class="hero__title">אביב בן-צבי</h1>
+        <p class="hero__subtitle">פיתוח תוכן והדרכת מורים בכלי בינה מלאכותית בהוראה</p>
+        <a href="mailto:avivbz@gmail.com" class="hero__contact">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/>
+            <polyline points="22,6 12,13 2,6"/>
+          </svg>
+          avivbz@gmail.com
+        </a>
+      </div>
+
+      <div class="hero__portrait-wrap reveal">
+        <img src="assets/aviv-portrait.jpg" alt="אביב בן-צבי" class="hero__portrait" width="600" height="600">
+      </div>
+    </div>
+  </header>
+
+  <!-- ====================== About ====================== -->
+  <section class="section" id="about">
+    <div class="container">
+     
+      <article class="expand-card reveal" data-expand>
+        <button class="expand-card__head" type="button" aria-expanded="false" aria-controls="about-body">
+          <span class="expand-card__title">קצת עליי</span>
+          <span class="expand-card__hint">
+            <span class="expand-card__hint-text--closed">לקריאה</span>
+            <span class="expand-card__hint-text--open">סגור</span>
+            <svg class="expand-card__chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <polyline points="6 9 12 15 18 9"/>
+            </svg>
+          </span>
+        </button>
+        <div class="expand-card__body" id="about-body">
+          <div class="expand-card__body-inner">
+            <p>אני עוסק בחינוך ובהוראה למעלה מעשרים וחמש שנים, ובמהלכן מילאתי שורה של תפקידים בחינוך הפורמלי – מורה למדעי המחשב, מחנך, רכז שכבה, מנהל חטיבה עליונה, וכיום רכז פדגוגי וסגן מנהלת בית ספר שש־שנתי. המסע הזה לימד אותי שחינוך טוב נשען על שני יסודות שאינם מתפשרים: <strong>ידע מקצועי עמוק, ויכולת אמיתית לראות את האדם שמולך</strong> – בין אם הוא תלמיד, מורה או עמית. אני מאמין באדם, ומאמין ביכולת לעורר שינוי.</p>
+
+            <p>בשנים האחרונות מצאתי את עצמי במפגש מרתק בין הניסיון הפדגוגי־ניהולי שצברתי לבין עולם הבינה המלאכותית. אני רואה בטכנולוגיה הזו לא תחליף לעבודת המורה אלא מכפיל כוח. מצד אחד היא מאפשרת ליישם ביתר עוצמה את עקרונות הלמידה העמוקה, ומצד שני היא יכולה לפנות למורים זמן ומשאבי קשב לעיסוק במה שדורש שיקול דעת אנושי. <strong>הגישה שלי היא שהערך החינוכי האמיתי מתחיל בדיוק במקום שבו הבינה המלאכותית מסתיימת</strong> – שם נכנסת לפעולה החשיבה האנושית.</p>
+
+            <p>במקביל לעבודתי בבית הספר אני שותף בעמותת "בינה אנושית" ומפתח בה תוכן להשתלמויות מורים שעוסקות בשילוב פדגוגי, מושכל ואתי של בינה מלאכותית בהוראה. אני מנחה מורים, מפתח כלים ויחידות לימוד, ועוסק בשאלות שלדעתי הן החשובות ביותר בחינוך כיום: כיצד נשמור על איכות הלמידה בעידן שבו הטכנולוגיה זמינה ומפתה, כיצד נטפח אצל תלמידים שליטה בכלים ולא תלות בהם, וכיצד נמשיך לראות במורה את הסמכות המקצועית המתכננת והמובילה. זוהי בעיניי השעה הפדגוגית המעניינת ביותר שחוויתי, ואני שמח להיות בלב העשייה שלה.</p>
+          </div>
+        </div>
+      </article>
+    </div>
+  </section>
+
+  <!-- ====================== Philosophy ====================== -->
+  <section class="section section--alt" id="philosophy">
+    <div class="container">
+     
+      <article class="expand-card reveal" data-expand>
+        <button class="expand-card__head" type="button" aria-expanded="false" aria-controls="philosophy-body">
+          <span class="expand-card__title">תפיסה פדגוגית</span>
+          <span class="expand-card__hint">
+            <span class="expand-card__hint-text--closed">לקריאה</span>
+            <span class="expand-card__hint-text--open">סגור</span>
+            <svg class="expand-card__chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <polyline points="6 9 12 15 18 9"/>
+            </svg>
+          </span>
+        </button>
+        <div class="expand-card__body" id="philosophy-body">
+          <div class="expand-card__body-inner">
+            <p>תפיסת ההוראה שלי נשענת על הנחת יסוד אחת: <strong>למידה עמוקה איננה תוצר של חשיפה לתכנים אלא של עיבוד פעיל שלהם.</strong> עקרונות מתחום מדעי הלמידה – הוראה ישירה ומפורשת, ביסוס ידע קודם, תרגולי שליפה ומשוב מדויק – הם התשתית המקצועית שעליה אני בונה שיעורים ומהלכים פדגוגיים. הבינה המלאכותית, אינה מחליפה עקרונות אלה ואינה משנה אותם, אלא משמשת מכפיל כוח ליישומם.</p>
+
+            <p>מתוך כך אני בוחן כל שילוב של מודלי שפה בכיתה דרך שלושה פרמטרים שאינם מתפשרים: האם השימוש <strong>פדגוגי</strong> – כלומר, האם הוא תורם ללמידה או מאפשר לתלמיד לדלג מעליה; האם הוא <strong>מושכל</strong> – כלומר, האם הוא מוביל ללמידה טובה יותר ולא רק לשיעור יעיל יותר; והאם הוא <strong>אתי</strong> – כלומר, האם הוא מודע להטיות, לפערים ולסיכון של צמצום הקשר האנושי, ויודע לנהל אותם.</p>
+
+            <p>בלב התפיסה שלי עומדת אמירה אחת שאני חוזר אליה שוב ושוב מול מורים ותלמידים: <strong>הערך החינוכי מתחיל בדיוק במקום שבו הבינה המלאכותית מסתיימת והחשיבה האנושית נכנסת לפעולה.</strong> השימוש בכלי איננו המטרה אלא הטריגר לחשיבה. המורה נשאר הסמכות המקצועית – הוא המתכנן, הוא המוביל, והוא זה שמגדיר מראש את המקטעים בהם הטכנולוגיה משתלבת. המטרה החינוכית שלי היא שתלמידי התיכון ירכשו שליטה בכלים ולא תלות בהם: יבינו את מנגנון הפעולה ואת מגבלותיו, יידעו לנהל מול המודל תהליך איטרטיבי של דיוק והבהרה, יפתחו ספקנות בריאה ויכולת אימות, ויפעילו שיקול דעת אתי שבו הם עצמם נושאים באחריות לתוצר הסופי.</p>
+          </div>
+        </div>
+      </article>
+    </div>
+  </section>
+
+  <!-- ====================== Portfolio ====================== -->
+  <section class="section" id="portfolio">
+    <div class="container">
+      <header class="section__header reveal">
+        <h2 class="section__title">תיק עבודות</h2>
+        <p class="section__intro">מבחר עבודות שמדגימות את הגישה שלי לשילוב כלים טכנולוגיים ובינה מלאכותית בהוראה: כלי בידי המורה, לא תחליף לו. כל פרויקט נבנה מתוך חשיבה על הפדגוגיה ולא על הכלי.</p>
+      </header>
+
+      <div class="portfolio-grid">
+
+        <!-- Category A: Bots -->
+        <article class="category-card reveal" data-category data-open="false">
+          <button class="category-card__head" type="button" aria-expanded="false" aria-controls="cat-a-projects">
+            <h3 class="category-card__title">כלים למורים — בוטים פדגוגיים</h3>
+            <p class="category-card__desc">בוטים המרחיבים את החשיבה הפדגוגית של המורה: אחד מסייע בניסוח אני מאמין חינוכי, השני בהמרת מטלות לפי מודל SAMR. פותחו ב-Gemini Gems.</p>
+          </button>
+          <div class="category-card__footer">
+            <span class="category-card__count"><span class="category-card__count-num">2</span> פרויקטים</span>
+            <span class="category-card__toggle">
+              <span class="category-card__toggle-text--closed">הצג</span>
+              <span class="category-card__toggle-text--open">הסתר</span>
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <polyline points="6 9 12 15 18 9"/>
+              </svg>
+            </span>
+          </div>
+          <div class="projects" id="cat-a-projects">
+            <div class="projects__inner">
+              <a class="project" href="https://gemini.google.com/gem/1CKCE68vbX1xh5VTv1P1agHelH2ZxwP2H?usp=sharing" target="_blank" rel="noopener noreferrer">
+                <span class="project__title">בוט כתיבת אני מאמין חינוכי</span>
+                <span class="project__meta">
+                  <span class="project__tag">Gemini</span>
+                  <svg class="project__arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+                </span>
+              </a>
+              <a class="project" href="https://gemini.google.com/gem/1Z6jwfj-16cRSTqeM92dL56iS0iC-nzjq?usp=sharing" target="_blank" rel="noopener noreferrer">
+                <span class="project__title">בוט המרת מטלות לפי מודל SAMR</span>
+                <span class="project__meta">
+                  <span class="project__tag">Gemini</span>
+                  <svg class="project__arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+                </span>
+              </a>
+            </div>
+          </div>
+        </article>
+
+        <!-- Category B: Learning content -->
+        <article class="category-card reveal" data-category data-open="false">
+          <button class="category-card__head" type="button" aria-expanded="false" aria-controls="cat-b-projects">
+            <h3 class="category-card__title">תוכן לימודי לתלמידים</h3>
+            <p class="category-card__desc">יחידות לימוד אינטראקטיביות המיועדות ללמידה עצמית פעילה: עיבוד פעיל של תכנים, תרגולי שליפה, והתאמה לקצב הלומד. פותחו ב-Canva וב-Genially.</p>
+          </button>
+          <div class="category-card__footer">
+            <span class="category-card__count"><span class="category-card__count-num">2</span> פרויקטים</span>
+            <span class="category-card__toggle">
+              <span class="category-card__toggle-text--closed">הצג</span>
+              <span class="category-card__toggle-text--open">הסתר</span>
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <polyline points="6 9 12 15 18 9"/>
+              </svg>
+            </span>
+          </div>
+          <div class="projects" id="cat-b-projects">
+            <div class="projects__inner">
+              <a class="project" href="https://canva.link/yjhvlx5ts4hc7za" target="_blank" rel="noopener noreferrer">
+                <span class="project__title">שיעור ללמידה עצמית</span>
+                <span class="project__meta">
+                  <span class="project__tag">Canva</span>
+                  <svg class="project__arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+                </span>
+              </a>
+              <a class="project" href="https://view.genially.com/69edf224ee80d8c95d6978db" target="_blank" rel="noopener noreferrer">
+                <span class="project__title">יחידת לימוד אינטראקטיבית</span>
+                <span class="project__meta">
+                  <span class="project__tag">Genially</span>
+                  <svg class="project__arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+                </span>
+              </a>
+            </div>
+          </div>
+        </article>
+
+        <!-- Category C: Teacher PD -->
+        <article class="category-card reveal" data-category data-open="false">
+          <button class="category-card__head" type="button" aria-expanded="false" aria-controls="cat-c-projects">
+            <h3 class="category-card__title">פיתוח להשתלמויות מורים</h3>
+            <p class="category-card__desc">סדנאות והשתלמויות שבונות מסגרת חשיבה לשילוב מושכל ואתי של בינה מלאכותית בהוראה — לא הדגמה של "מה אפשר", אלא כלים לשיקול דעת.</p>
+          </button>
+          <div class="category-card__footer">
+            <span class="category-card__count"><span class="category-card__count-num">1</span> פרויקט</span>
+            <span class="category-card__toggle">
+              <span class="category-card__toggle-text--closed">הצג</span>
+              <span class="category-card__toggle-text--open">הסתר</span>
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <polyline points="6 9 12 15 18 9"/>
+              </svg>
+            </span>
+          </div>
+          <div class="projects" id="cat-c-projects">
+            <div class="projects__inner">
+              <a class="project" href="https://gamma.app/docs/-nkunz9zm00sf3u9?mode=present#card-9a3h965p9po2ekw" target="_blank" rel="noopener noreferrer">
+                <span class="project__title">סדנת היכרות עם בינה מלאכותית למורים</span>
+                <span class="project__meta">
+                  <span class="project__tag">Gamma</span>
+                  <svg class="project__arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+                </span>
+              </a>
+            </div>
+          </div>
+        </article>
+
+        <!-- Category D: Vibe Coding -->
+        <article class="category-card reveal" data-category data-open="false">
+          <button class="category-card__head" type="button" aria-expanded="false" aria-controls="cat-d-projects">
+            <h3 class="category-card__title">Vibe Coding — פיתוח כלים מותאמים</h3>
+            <p class="category-card__desc">יצירה מהירה של כלי למידה ייעודיים, מותאמים בדיוק לצורך פדגוגי ספציפי — במקום להתפשר על כלי גנרי.</p>
+          </button>
+          <div class="category-card__footer">
+            <span class="category-card__count"><span class="category-card__count-num">3</span> פרויקטים</span>
+            <span class="category-card__toggle">
+              <span class="category-card__toggle-text--closed">הצג</span>
+              <span class="category-card__toggle-text--open">הסתר</span>
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <polyline points="6 9 12 15 18 9"/>
+              </svg>
+            </span>
+          </div>
+          <div class="projects" id="cat-d-projects">
+            <div class="projects__inner">
+              <a class="project" href="https://claude.ai/public/artifacts/e07aaec4-8f26-4cc7-9f9b-68f24ce1eebb" target="_blank" rel="noopener noreferrer">
+                <span class="project__title">כרטיסיות למידה באזרחות</span>
+                <span class="project__meta">
+                  <span class="project__tag">Claude</span>
+                  <svg class="project__arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+                </span>
+              </a>
+              <a class="project" href="https://ai-education-statements.lovable.app/" target="_blank" rel="noopener noreferrer">
+                <span class="project__title">משחק עמדות — שילוב בינה מלאכותית בחינוך</span>
+                <span class="project__meta">
+                  <span class="project__tag">Lovable</span>
+                  <svg class="project__arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+                </span>
+              </a>
+              <a class="project" href="https://gemini.google.com/share/c3a93feff5ba" target="_blank" rel="noopener noreferrer">
+                <span class="project__title">משחק למידה — השלמת משפטים באנגלית</span>
+                <span class="project__meta">
+                  <span class="project__tag">Gemini</span>
+                  <svg class="project__arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+                </span>
+              </a>
+            </div>
+          </div>
+        </article>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- ====================== Contact ====================== -->
+  <section class="section section--alt contact" id="contact">
+    <div class="container">
+      <div class="reveal">
+        <h2 class="contact__title">מוזמנים ליצור קשר</h2>
+        <a href="mailto:avivbz@gmail.com" class="contact__mail">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/>
+            <polyline points="22,6 12,13 2,6"/>
+          </svg>
+          avivbz@gmail.com
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ====================== Footer ====================== -->
+  <footer class="footer">
+    <div class="container">
+      <p>© <span id="year"></span> אביב בן-צבי · בינה ופדגוגיה. האתר נבנה באמצעות Claude Code</p>
+    </div>
+  </footer>
+
+  <!-- ====================== Scripts ====================== -->
+  <script>
+    // Year
+    document.getElementById('year').textContent = new Date().getFullYear();
+
+    // Sticky nav styling on scroll
+    const nav = document.getElementById('nav');
+    const onScroll = () => {
+      if (window.scrollY > 8) nav.classList.add('is-scrolled');
+      else nav.classList.remove('is-scrolled');
+    };
+    window.addEventListener('scroll', onScroll, { passive: true });
+    onScroll();
+
+    // Mobile nav toggle
+    const navToggle = document.getElementById('navToggle');
+    const navLinks = document.getElementById('navLinks');
+    navToggle.addEventListener('click', () => {
+      const open = navLinks.classList.toggle('is-open');
+      navToggle.setAttribute('aria-expanded', open ? 'true' : 'false');
+    });
+    // Close mobile nav after clicking a link
+    navLinks.querySelectorAll('a').forEach(a => {
+      a.addEventListener('click', () => {
+        navLinks.classList.remove('is-open');
+        navToggle.setAttribute('aria-expanded', 'false');
+      });
+    });
+
+    // Expandable cards (about / philosophy)
+    document.querySelectorAll('[data-expand]').forEach(card => {
+      const head = card.querySelector('.expand-card__head');
+      const body = card.querySelector('.expand-card__body');
+
+      head.addEventListener('click', () => {
+        const isOpen = card.hasAttribute('open');
+        if (isOpen) {
+          // closing
+          body.style.maxHeight = body.scrollHeight + 'px';
+          // force reflow then set to 0
+          requestAnimationFrame(() => { body.style.maxHeight = '0px'; });
+          card.removeAttribute('open');
+          head.setAttribute('aria-expanded', 'false');
+        } else {
+          card.setAttribute('open', '');
+          head.setAttribute('aria-expanded', 'true');
+          body.style.maxHeight = body.scrollHeight + 'px';
+          // After transition, set to none so content stays responsive
+          body.addEventListener('transitionend', function handler() {
+            if (card.hasAttribute('open')) body.style.maxHeight = 'none';
+            body.removeEventListener('transitionend', handler);
+          });
+        }
+      });
+    });
+
+    // Category cards toggle
+    document.querySelectorAll('[data-category]').forEach(card => {
+      const head = card.querySelector('.category-card__head');
+      const footerToggle = card.querySelector('.category-card__footer');
+      const projects = card.querySelector('.projects');
+
+      const toggle = () => {
+        const isOpen = card.dataset.open === 'true';
+        if (isOpen) {
+          projects.style.maxHeight = projects.scrollHeight + 'px';
+          requestAnimationFrame(() => { projects.style.maxHeight = '0px'; });
+          card.dataset.open = 'false';
+          head.setAttribute('aria-expanded', 'false');
+        } else {
+          card.dataset.open = 'true';
+          head.setAttribute('aria-expanded', 'true');
+          projects.style.maxHeight = projects.scrollHeight + 'px';
+          projects.addEventListener('transitionend', function handler() {
+            if (card.dataset.open === 'true') projects.style.maxHeight = 'none';
+            projects.removeEventListener('transitionend', handler);
+          });
+        }
+      };
+
+      head.addEventListener('click', toggle);
+      footerToggle.addEventListener('click', toggle);
+    });
+
+    // Reveal on scroll
+    const reveals = document.querySelectorAll('.reveal');
+    if ('IntersectionObserver' in window) {
+      const io = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+          if (entry.isIntersecting) {
+            entry.target.classList.add('is-visible');
+            io.unobserve(entry.target);
+          }
+        });
+      }, { threshold: 0.12, rootMargin: '0px 0px -40px 0px' });
+      reveals.forEach(el => io.observe(el));
+    } else {
+      reveals.forEach(el => el.classList.add('is-visible'));
+    }
+  </script>
+</body>
+</html>
